@@ -12,10 +12,10 @@ from .models import User, UserProfile
     # method two
 @receiver(post_save, sender=User)
 def post_save_profile_receiver(sender, instance, created,**Kwargs):
-    print(created,instance)
+    # print(created,instance)
     if created:
         UserProfile.objects.create(user = instance)
-        print("created the user profile")
+        # print("created the user profile")
     else:
         try:
             profile =  UserProfile.objects.get(user=instance)
@@ -23,11 +23,12 @@ def post_save_profile_receiver(sender, instance, created,**Kwargs):
         except:
             # create a UserProfile ifnot exists
             UserProfile.objects.create(user = instance)
-            print("prfile was not exist and I created one")
-        print("updated the user profile")
+            # print("prfile was not exist and I created one")
+        # print("updated the user profile")
 
 
 @receiver(pre_save, sender=User)
 def pre_save_profile_receiver(sender, instance, **Kwargs):
-    print(instance.username, "this is being saved")
+    # print(instance.username, "this is being saved")
+    pass
 
