@@ -160,3 +160,18 @@ MESSAGE_TAGS = {
         messages.WARNING: 'warning',
         messages.ERROR: 'danger',
 }
+
+
+#Email sending settings
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT", cast=int)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD=config("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS=True
+DEFAULT_FROM_EMAIL="Foodonline Marketpalace <mitkiflemariam@gmail.com>"
+# EMAIL_USE_SSL = False
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+CSRF_COOKIE_SECURE = False  # Set to True if you're using HTTPS
+SESSION_COOKIE_SECURE = False  # Set to True if you're using HTTPS

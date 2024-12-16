@@ -17,6 +17,7 @@
 
                             <!-- when the submit button is clicked then crf token created -->
                              {% csrf_token %}
+                             
                             <ul class="register-add-restaurant-tab-container restaurant-information-tab-container">
                                 <li>
                                     <div class="row">
@@ -37,7 +38,7 @@
                                                                                                                 
                                                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                             <div class="field-holder">
-                                                                <label>Email Address {{form.email}}
+                                                                <label>Email Address</label>{{form.email}}
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
