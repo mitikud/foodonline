@@ -1,5 +1,5 @@
 from django.contrib import messages, auth
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.utils.http import urlsafe_base64_decode
 from accounts.util import detect_redirect, send_verification_email
@@ -7,12 +7,14 @@ from django.contrib.auth.tokens import default_token_generator
 
 from .registration_form import UserForm
 from .models import User, UserProfile
+from vendor.models import Vendor
 from vendor.vendor_registration_form import VendorForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 
 from django.core.exceptions import PermissionDenied
-
+from django.conf import settings
+from django.core.mail import send_mail 
 from .util import send_password_reset_email
 # Create your views here.
 
@@ -184,12 +186,16 @@ def myAccount(request):
 @login_required(login_url='login')
 @user_passes_test(check_user_role)
 def customerdashboard(request):
+    
     return render(request, 'accounts/customerdashboard.html')
 @login_required(login_url='login')
 @user_passes_test(check_vendor_role)
 def vendordashboard(request):
-    return render(request, 'accounts/vendordashboard.html')
-
+    vendor = Vendor.objects.get(user=request.user)
+    context = {
+        'vendor': vendor
+    }
+    return render(request, 'accounts/vendordashboard.html', context)
 
 def forgot_password(request):
     if request.method == 'POST':
