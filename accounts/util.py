@@ -69,19 +69,36 @@ def send_password_reset_email(request, user):
 
     send_mail(subject, message, 'no-reply@example.com', [user.email])
     
-def send_verification_email(request, user):
+# def send_verification_email(request, user):
    
-    uid = urlsafe_base64_encode(force_bytes(user.pk))
-    token = default_token_generator.make_token(user)
-    domain = request.get_host()
-    subject = "Activate Your Account"
-    message = render_to_string('accounts/emails/activation_email.html', {
+#     uid = urlsafe_base64_encode(force_bytes(user.pk))
+#     token = default_token_generator.make_token(user)
+#     domain = request.get_host()
+#     subject = "Activate Your Account"
+#     message = render_to_string('accounts/emails/activation_email.html', {
+#         'user': user,
+#         'domain': domain,
+#         'uid': uid,
+#         'token': token,
+#     })
+#     to_email= user.email
+
+#     send_mail(subject, message, 'no-reply@example.com',  [user.email])
+def send_verification_email(request, user, mail_subject, email_template):
+    from_email = settings.DEFAULT_FROM_EMAIL
+    current_site = get_current_site(request)
+    message = render_to_string(email_template,{
         'user': user,
-        'domain': domain,
-        'uid': uid,
-        'token': token,
+        'domain': current_site,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': default_token_generator.make_token(user)
     })
-    to_email= user.email
-
-    send_mail(subject, message, 'no-reply@example.com',  [user.email])
-
+    to_email = user.email
+    mail = EmailMessage(mail_subject, message,from_email, to=[to_email])
+    mail.send()
+def send_notification_is_approved(mail_subject, mail_template, context):
+    from_email = settings.DEFAULT_FROM_EMAIL
+    message = render_to_string(mail_template, context)
+    to_email = context['user'].email
+    mail = EmailMessage(mail_subject, message,from_email, to=[to_email])
+    mail.send()

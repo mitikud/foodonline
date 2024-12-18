@@ -54,20 +54,22 @@ def registerUser(request):
             username = form.cleaned_data['username'] #get the username
             email = form.cleaned_data['email'] #get the email
             password = form.cleaned_data['password'] #get the password
-            user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=password)
+            user = User.objects.create_user(
+                first_name=first_name,
+                last_name=last_name,
+                username=username,
+                email=email, 
+                password=password)
             user.role = User.CUSTOMER
           
             user.save()
             
-            #  send verification email
-            try:
-                send_verification_email(request, user)
-                messages.success(request, "Your account has been registered successfully! Please check your email to verify your account.")
-            except Exception as e:
-                messages.warning(request, f"Unable to send verification email. Please try again later. Error: {e}")
-
- 
-
+            # #  send verification email
+            # try:
+            #     send_verification_email(request, user)
+            #     messages.success(request, "Your account has been registered successfully! Please check your email to verify your account.")
+            # except Exception as e:
+            #     messages.warning(request, f"Unable to send verification email. Please try again later. Error: {e}")
             messages.info(request,"Your user has been register successfully!")
             return redirect('registerUser')
         else:
@@ -94,7 +96,7 @@ def registerVendor(request):
 
         if vendor_form.is_valid() and form.is_valid():
             first_name = form.cleaned_data['first_name'] #get the first_name
-            last_name = form.cleaned_data['first_name'] #get the last_name
+            last_name = form.cleaned_data['last_name'] #get the last_name
             username = form.cleaned_data['username'] #get the username
             email = form.cleaned_data['email'] #get the email
             password = form.cleaned_data['password'] #get the password
@@ -112,9 +114,10 @@ def registerVendor(request):
             user_profile, created = UserProfile.objects.get_or_create(user=user)
 
             vendor = vendor_form.save(commit=False)
-            # vendor.user = user
+            vendor.user = user
             # user_profile = UserProfile.objects.get(user= user)
-            user.user_profile = user_profile
+            # user.user_profile = user_profile
+            vendor.user_profile = user_profile
             vendor.save()
             messages.info(request,"Your account has been register successfully!, please waite for approval")
             return redirect('registerVendor')
