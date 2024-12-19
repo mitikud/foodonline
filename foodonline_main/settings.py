@@ -73,7 +73,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 # custom context_processor
-                'accounts.context_processor.get_vendor'
+                'accounts.context_processor.get_vendor',
+                'accounts.context_processor.get_google_api_key_from_settings'
             ],
         },
     },
@@ -163,6 +164,11 @@ MESSAGE_TAGS = {
         messages.ERROR: 'danger',
 }
 
+# google api key for 
+# -geocoding api
+# -Map javascript api
+# -places api
+GOOGLE_API_KEY = 'AIzaSyCVjMQAGJtS_TMRrmc78jKgWn0CXBTppHs'
 
 #Email sending settings
 EMAIL_HOST = config("EMAIL_HOST")
