@@ -31,7 +31,7 @@ function onPlaceChanged() {
     if (status == google.maps.GeocoderStatus.OK) {
       var latitude = res[0].geometry.location.lat();
       var longitude = res[0].geometry.location.lng();
-      
+
       $("#id_latitude").val(latitude);
       $("#id_longitude").val(longitude);
     }
@@ -41,17 +41,18 @@ function onPlaceChanged() {
       if (place.address_components[i].types[j] == "country") {
         $("#id_country").val(place.address_components[i].long_name);
       }
-      if (place.address_components[i].types[j] == "administrative_area_level_1") {
+      if (
+        place.address_components[i].types[j] == "administrative_area_level_1"
+      ) {
         $("#id_state").val(place.address_components[i].long_name);
       }
       if (place.address_components[i].types[j] == "locality") {
         $("#id_city").val(place.address_components[i].long_name);
       }
-      if (place.address_components[i].types[j] == 'postal_code') {
+      if (place.address_components[i].types[j] == "postal_code") {
         $("#id_pin_code").val(place.address_components[i].long_name);
-      }
-      else {
-        $("#id_pin_code").val('');
+      } else {
+        $("#id_pin_code").val("");
       }
     }
   }
