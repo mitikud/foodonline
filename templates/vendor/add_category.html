@@ -21,6 +21,7 @@
                             <h5 class="text-uppercase">Add Food Category</h5>
                             <hr>
 							<!-- Build menue Form Start -->
+                            <button class="btn btn-secondary" onclick="history.back()"><i class="fas fa-angle-left" arial-hidden="'true"></i>Back</button>
                             <h6> Add new Food Category</h6>
                              <form action="{% url 'add_category' %}" method="POST">
                                 {% csrf_token %}
@@ -48,7 +49,7 @@
                                     <button type="submit" class="btn btn-success"><i class="fas fa-check"></i>Create</button>
                              </form>
 
-							<!-- Build menue Form Start -->
+							<!-- Build menue Form end here -->
                             
 
 

@@ -15,6 +15,9 @@ urlpatterns = [
     path('menue_builder/category/delete/<int:pk>/', views.delete_category, name='delete_category'),
 
     # Food item CRUD
-    path('menue_builder/category/food_item/add/', views.add_food_item, name='add_food_item'),
+    path('menue_builder/food/add/', views.add_food_item, name='add_food_item'),
+    path('menue_builder/food/edit/<int:pk>/', views.edit_food_item, name='edit_food_item'),
+    path('menue_builder/food/delete/<int:pk>/', views.delete_food_item, name='delete_food_item'),
+
 
 ]
