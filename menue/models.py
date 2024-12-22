@@ -21,7 +21,7 @@ class Category(models.Model):
 
 class FoodItem(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='fooditems') #related_name used to get food items if category is known ie reverse lookup
     food_title = models.CharField(max_length=50)
     slug = models.SlugField(max_length=100, unique=True)# it's url=> example if see food the the slag is sea_food
     description = models.TextField(max_length=250, blank=True)

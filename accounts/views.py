@@ -11,7 +11,7 @@ from vendor.models import Vendor
 from vendor.vendor_registration_form import VendorForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
-
+from django.template.defaultfilters import slugify
 from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from django.core.mail import send_mail 
@@ -117,6 +117,8 @@ def registerVendor(request):
             vendor.user = user
             # user_profile = UserProfile.objects.get(user= user)
             # user.user_profile = user_profile
+            vendor_name = vendor_form.cleaned_data['vendor_name']
+            vendor.vendor_slug = slugify('vendor_name')+'_'+str(user.id)
             vendor.user_profile = user_profile
             vendor.save()
             messages.info(request,"Your account has been register successfully!, please waite for approval")
