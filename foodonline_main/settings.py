@@ -76,7 +76,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # custom context_processor
                 'accounts.context_processor.get_vendor',
-                'accounts.context_processor.get_google_api_key_from_settings'
+                'accounts.context_processor.get_google_api_key_from_settings',
+                'marketplace.context_processor.get_cart_counter',
+
             ],
         },
     },

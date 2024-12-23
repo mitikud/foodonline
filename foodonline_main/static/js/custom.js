@@ -26,7 +26,7 @@ function onPlaceChanged() {
   //   console.log(place)
   var geocoder = new google.maps.Geocoder();
   var address = document.getElementById("id_address").value;
-  geocoder.geocode({ 'address': address }, function (res, status) {
+  geocoder.geocode({ address: address }, function (res, status) {
     console.log(res);
     if (status == google.maps.GeocoderStatus.OK) {
       var latitude = res[0].geometry.location.lat();
@@ -58,24 +58,110 @@ function onPlaceChanged() {
   }
 }
 
+$(document).ready(function () {
+  //Addtothe cart
+  $(".add_to_cart").on("click", function (e) {
+    e.preventDefault();
 
-$(document).ready(function(){
-    $('.add_to_cart').on('click', function(e){
-      e.preventDefault();
-
-      let food_id=$(this).attr('data-id');
-      let url=$(this).attr('data-url');
-      data = {
-        food_id: food_id,
-      }
-      $.ajax({
-        type: 'GET',
-        url: url,
-        data: data,
-        success: function(response){
-          console.log(response)
+    food_id = $(this).attr("data_id");
+    url = $(this).attr("data_url");
+    data = {
+      food_id: food_id,
+    };
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: data,
+      success: function (response) {
+        console.log(response);
+        if (response.status == "login required") {
+          //add sweet alert
+          // swal("title", "subtitle", "info");
+          swal(response.message, "", "info").then(function () {
+            window.location='/accounts'
+          });
         }
-      })
-    })
+        else if (response.status == "failed") {
+          swal(response.message, "", "error")
+        }
+        
+        else {
+          $("#cart_counter").html(response.cart_counter["cart_count"]);
+          $("#qty_" + food_id).html(response.qty);
+        }
+      },
+    });
+  });
+  //place the cart item quantity on load
+  $(".item_qty").each(function () {
+    var the_id = $(this).attr("id");
+    var qty = $(this).attr("data_qty");
+    $("#" + the_id).html(qty);
   });
 
+  //Decrease the cart
+  $(".decrease_cart").on("click", function (e) {
+    e.preventDefault();
+
+    food_id = $(this).attr("data_id");
+    url = $(this).attr("data_url");
+    data = {
+      food_id: food_id,
+    };
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: data,
+      success: function (response) {
+        console.log(response);
+        if (response.status == "login required") {
+          //add sweet alert
+          // swal("title", "subtitle", "info");
+          swal(response.message, "", "info").then(function () {
+            window.location='/accounts'
+          });
+        }
+        else if (response.status == "failed") {
+          swal(response.message, "", "error")
+        }
+        
+        else {
+          $("#cart_counter").html(response.cart_counter["cart_count"]);
+          $("#qty_" + food_id).html(response.qty);
+        }
+      },
+
+    });
+  });
+  
+  //Decrease the cart
+  $(".delete_cart").on("click", function (e) {
+   
+    cart_id = $(this).attr("data_id");
+    url = $(this).attr("data_url");
+    
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: data,
+      success: function (response) {
+        console.log(response);
+        if (response.status == "login required") {
+           swal(response.message, "", "info").then(function () {
+            window.location='/accounts'
+          });
+        }
+        else if (response.status == "failed") {
+          swal(response.message, "", "error")
+        }
+        
+        else {
+          $("#cart_counter").html(response.cart_counter["cart_count"]);
+          // $("#qty_" + food_id).html(response.qty);
+          swal(response.status,response.message, "", "success")
+        }
+      },
+
+    });
+  });
+});
