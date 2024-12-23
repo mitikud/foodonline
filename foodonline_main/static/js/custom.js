@@ -88,6 +88,12 @@ $(document).ready(function () {
         else {
           $("#cart_counter").html(response.cart_counter["cart_count"]);
           $("#qty_" + food_id).html(response.qty);
+
+          //calculate the subtotal, tax and grand total 
+          applyCartAmount(
+            response.cart_amount["subtotal"], 
+            response.cart_amount["tax"], 
+            response.cart_amount["grand_total"])
         }
       },
     });
@@ -133,6 +139,10 @@ $(document).ready(function () {
           if(window.location.pathname=='/cart/'){
           removeCartItem(response.qty, cart_id)
           checkEmptyCart();
+          applyCartAmount(
+            response.cart_amount["subtotal"], 
+            response.cart_amount["tax"], 
+            response.cart_amount["grand_total"])
         }
       }
       },
@@ -168,6 +178,10 @@ $(document).ready(function () {
           swal(response.status,response.message, "success")
           removeCartItem(0, cart_id)
           checkEmptyCart();
+          applyCartAmount(
+            response.cart_amount["subtotal"], 
+            response.cart_amount["tax"], 
+            response.cart_amount["grand_total"])
         }
       },
 
@@ -190,6 +204,16 @@ $(document).ready(function () {
     if(cart_counter == 0){
       document.getElementById('empty-cart').style.display = 'block';
     }
+  }
+
+  //apply the cart amount
+  function applyCartAmount(subtotal, tax, grandtotal){
+    if(window.location.pathname == '/cart/') {
+      $('#subtotal').html(subtotal);
+      $('#tax').html(tax);
+      $('#total').html(grandtotal);
+    }
+    
   }
 
 });
