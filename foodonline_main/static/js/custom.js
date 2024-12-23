@@ -104,6 +104,8 @@ $(document).ready(function () {
     e.preventDefault();
 
     food_id = $(this).attr("data_id");
+    cart_id = $(this).attr("id");
+    
     url = $(this).attr("data_url");
     data = {
       food_id: food_id,
@@ -128,22 +130,27 @@ $(document).ready(function () {
         else {
           $("#cart_counter").html(response.cart_counter["cart_count"]);
           $("#qty_" + food_id).html(response.qty);
+          if(window.location.pathname=='/cart/'){
+          removeCartItem(response.qty, cart_id)
+          checkEmptyCart();
         }
+      }
       },
 
     });
   });
   
-  //Decrease the cart
+  //delete the cart
   $(".delete_cart").on("click", function (e) {
    
     cart_id = $(this).attr("data_id");
+    
     url = $(this).attr("data_url");
     
     $.ajax({
       type: "GET",
       url: url,
-      data: data,
+     
       success: function (response) {
         console.log(response);
         if (response.status == "login required") {
@@ -156,12 +163,33 @@ $(document).ready(function () {
         }
         
         else {
-          $("#cart_counter").html(response.cart_counter["cart_count"]);
-          // $("#qty_" + food_id).html(response.qty);
-          swal(response.status,response.message, "", "success")
+          $("#cart_counter").html(response.cart_counter ? response.cart_counter["cart_count"] : 0);
+          //  $("#qty_" + food_id).html(response.qty);
+          swal(response.status,response.message, "success")
+          removeCartItem(0, cart_id)
+          checkEmptyCart();
         }
       },
 
     });
   });
+
+  //delete the cart element if the qty is 0
+  function removeCartItem(cartitemqty, cart_id){
+    
+    if(cartitemqty <= 0){
+      //remove the cart element
+      document.getElementById('cart-item-'+cart_id).remove();
+
+    }
+  }
+
+  // check ifthe cart is empty
+  function checkEmptyCart(){
+    var cart_counter = document.getElementById('cart_counter').innerHTML;
+    if(cart_counter == 0){
+      document.getElementById('empty-cart').style.display = 'block';
+    }
+  }
+
 });
