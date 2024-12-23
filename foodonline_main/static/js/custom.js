@@ -164,7 +164,7 @@ $(document).ready(function () {
         
         else {
           $("#cart_counter").html(response.cart_counter ? response.cart_counter["cart_count"] : 0);
-          //  $("#qty_" + food_id).html(response.qty);
+           $("#qty_" + cart_id).html(response.qty);
           swal(response.status,response.message, "success")
           removeCartItem(0, cart_id)
           checkEmptyCart();

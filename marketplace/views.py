@@ -113,7 +113,7 @@ def delete_cart(request, cart_id):
                 cart_item = Cart.objects.get(user=request.user,id=cart_id)
                 if cart_item:
                     cart_item.delete()
-                    return JsonResponse({'status':'success','message':'cart item deleted successfully'})
+                    return JsonResponse({'status':'success','message':'cart item deleted successfully','cart_counter': get_cart_counter(request)})
             except:
                 return JsonResponse({'status':'failed','message':'Cart item not found'})
 
