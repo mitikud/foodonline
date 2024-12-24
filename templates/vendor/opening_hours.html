@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Main Section Start -->
+<div class="main-section">
+    {% include 'includes/cover.html' %}
+    <div class="page-section account-header buyer-logged-in">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <!-- load the sidebar here -->
+                    {% include 'includes/vendor_sidebar.html' %}
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                    <div class="user-dashboard loader-holder">
+                        <div class="user-holder">
+                            
+                            
+                            <h5 class="text-uppercase">Opening Hours</h5>
+                            <hr>
+							<!-- Build menue Form Start -->
+                             {% for hour in opening_hour %}
+                                {{ hour }}
+                             {% endfor %}
+
+							<!-- Build menue Form Start -->
+                            
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main Section End -->
+    {% include 'includes/alert.html' %}
+
+{% endblock %}
+

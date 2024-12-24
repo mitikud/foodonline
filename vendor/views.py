@@ -1,9 +1,9 @@
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
-from .vendor_registration_form import VendorForm
+from .vendor_registration_form import VendorForm, OpeningHoursForm
 from accounts.registration_form import UserProfileForm
 from accounts.models import UserProfile
-from .models import Vendor
+from .models import Vendor, OpeningHours
 from menue.models import Category, FoodItem
 from menue.menue_form import CategoryForm, FoodItemForm
 
@@ -190,3 +190,14 @@ def delete_food_item(request, pk=None):
     food.delete()
     messages.success(request, 'Food item has been deleted successfully')
     return redirect('foodItems_by_category', food.category.id)
+
+def opening_hours(request):
+    vendor =  Vendor.objects.get(user=request.user)
+    opening_hour = OpeningHours.objects.filter(vendor=vendor)
+    print(opening_hour)
+    from_hr = OpeningHoursForm()
+    context = {
+        'from_hr': from_hr,
+        'opening_hour': opening_hour
+    }
+    return render(request, 'vendor/opening_hours.html', context)

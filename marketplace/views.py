@@ -106,6 +106,7 @@ def cart(request):
     return render(request, 'cart/cart.html', context)
 
 def delete_cart(request, cart_id):
+
     if request.user.is_authenticated:
         if is_ajax(request=request):
             try:
@@ -119,3 +120,11 @@ def delete_cart(request, cart_id):
 
         else:
             return JsonResponse({'status':'failed','message':'invalied response', 'cart_counter': get_cart_counter(request)})
+        
+def search(request):
+    address = request.GET['address']
+    latitude = request.GET['lat']
+    longitude = request.GET['lng']
+    radius = request.GET['radius']
+    restaurant_name = request.GET['restaurant-name']
+    return render(request, "marketplace/listing.html")
