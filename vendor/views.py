@@ -1,4 +1,5 @@
-from django.http import HttpResponseForbidden
+from django.db import IntegrityError
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from .vendor_registration_form import VendorForm, OpeningHoursForm
 from accounts.registration_form import UserProfileForm
@@ -192,12 +193,51 @@ def delete_food_item(request, pk=None):
     return redirect('foodItems_by_category', food.category.id)
 
 def opening_hours(request):
-    vendor =  Vendor.objects.get(user=request.user)
-    opening_hour = OpeningHours.objects.filter(vendor=vendor)
-    print(opening_hour)
-    from_hr = OpeningHoursForm()
+    vendor = get_object_or_404(Vendor, user=request.user)
+    opening_hours = OpeningHours.objects.filter(vendor=vendor).order_by('day', 'from_hour')
+    form = OpeningHoursForm()
+
     context = {
-        'from_hr': from_hr,
-        'opening_hour': opening_hour
+        'form': form,
+        'opening_hours': opening_hours
     }
     return render(request, 'vendor/opening_hours.html', context)
+
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+def add_opening_hours(request):
+    if request.user.is_authenticated:
+        # if is_ajax(request = request): # alternative method for is_ajax you can also use the next line
+        # if request.headers.get('x-requested-with') == 'XMLHttpRequest': # if true , it's ajax request same as above commented
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == 'POST':
+            #save to DB
+            day = request.POST.get('day')
+            from_hour = request.POST.get('from_hour')
+            to_hour = request.POST.get('to_hour')
+            is_closed = request.POST.get('is_closed')
+            try:
+                vendor = get_object_or_404(Vendor, user=request.user)
+                hour = OpeningHours.objects.create(vendor=vendor,day=day,from_hour=from_hour,to_hour=to_hour,is_closed=is_closed)
+                if hour:
+                    day = OpeningHours.objects.get(id=hour.id)
+                    if day.is_closed:
+                        response ={'status':'success', 'id':hour.id,'day':day.get_day_display(),'is_closed':'closed'}
+                    else:
+                        response ={'status':'success', 'id':hour.id,'day':day.get_day_display(),'from_hour': hour.from_hour,'to_hour':hour.to_hour}
+                return JsonResponse(response)
+            except IntegrityError as e:
+                # response = {'status':'filed'}
+                response = {'status':'filed', 'message':from_hour + ' '+ to_hour + ' already existed', 'error':str(e)}
+                return JsonResponse(response)
+        else:
+            HttpResponse("Invalied request")
+
+
+def remove_opening_hour(request, pk=None):
+    if request.user.is_authenticated:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            hour = get_object_or_404(OpeningHours, pk=pk)
+            hour.delete()
+            return JsonResponse({'status': 'success', 'id': pk})
+        return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Unauthorized'}, status=403)   
