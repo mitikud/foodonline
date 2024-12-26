@@ -5,16 +5,18 @@ from marketplace.context_processor import get_cart_counter, get_cart_amount
 from vendor.models import Vendor, OpeningHours
 from menue.models import Category, FoodItem
 from .models import Cart
-from datetime import date
+from datetime import date, datetime
 
 # Create your views here.
 
 def marketplace(request):
     vendors = Vendor.objects.filter(is_approved=True, user__is_active=True)
     vendor_count =  vendors.count()
+   
     context  = {
         'vendors': vendors,
-        'vendor_count': vendor_count
+        'vendor_count': vendor_count,
+       
     }
     return render(request, 'marketplace/listing.html', context)
 
@@ -35,6 +37,22 @@ def vendor_detail(request, vendor_slug):
 
     current_opening_hours = OpeningHours.objects.filter(vendor=vendor, day=today)
 
+    #These lines have been moved to is_open() method in Vendor class
+    
+    # now = datetime.now()
+    # current_time = now.strftime('%H:%M:%S')
+    # # incase we have multiple opening hours
+    # is_open = None
+    # for i in current_opening_hours:
+    #     if not i.from_hour or not i.to_hour:
+    #         continue
+    #     start = str(datetime.strptime(i.from_hour,"%I:%M %p").time())
+    #     end = str(datetime.strptime(i.to_hour,"%I:%M %p").time())
+    #     if current_time > start and current_time < end:
+    #         is_open = True
+    #         break
+    #     else:
+    #         is_open = False
   
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
@@ -46,6 +64,10 @@ def vendor_detail(request, vendor_slug):
         'categories': categories,
         'opening_hours': opening_hours,
         'current_opening_hours': current_opening_hours,
+
+        #is_open has been moved to is_open() method in Vendor class
+
+        # 'is_open': is_open
         }
     return render(request, 'marketplace/vendor_detail.html', context)
 

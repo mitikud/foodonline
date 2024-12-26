@@ -31,7 +31,15 @@
                                 </figure>
                             </div>
                             <div class="text-holder">
-                                <span class="restaurant-title">{{vendor}}</span>
+                                <span class="restaurant-title">{{vendor}}
+                                    {% if not vendor.is_open %}
+                                        
+                                        [Closed]
+                                    {% else %}
+                                   
+                                        [Open]
+                                    {% endif %}
+                                </span>
                                 <div class="text">
                                 
                                     <!-- we don't need this line as we are getting the address from the google -->

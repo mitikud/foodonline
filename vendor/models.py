@@ -2,6 +2,7 @@ from django.db import models
 from datetime import time
 from accounts.models import User, UserProfile
 from accounts.util import send_notification_is_approved
+from datetime import datetime, date
 # Create your models here.
 
 class Vendor(models.Model):
@@ -16,6 +17,28 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.vendor_name
+    def is_open(self):
+        current_today = date.today()
+        today = current_today.isoweekday()
+
+        current_opening_hours = OpeningHours.objects.filter(vendor=self, day=today)
+        
+        now = datetime.now().time()  # Get current time as a time object
+        current_time = now.strftime('%H:%M:%S')
+        is_open = None  # Default to closed
+    
+        for i in current_opening_hours:
+            if not i.from_hour or not i.to_hour:
+                continue
+            start = str(datetime.strptime(i.from_hour,"%I:%M %p").time())
+            end = str(datetime.strptime(i.to_hour,"%I:%M %p").time())
+            print(current_time > start and current_time < end)
+            if current_time > start and current_time < end:
+                is_open = True
+                break
+            else:
+                is_open = False     
+        return is_open
     def save(self, *args, **kwargs):
         if self.pk is not None:
             #update
@@ -68,5 +91,6 @@ class OpeningHours(models.Model):
         ordering = ('day','-from_hour',)
         unique_together = ('vendor','day','from_hour', 'to_hour')
     
+   
     def __str__(self):
         return self.get_day_display()
