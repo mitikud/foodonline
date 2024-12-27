@@ -28,16 +28,18 @@ class Vendor(models.Model):
         is_open = None  # Default to closed
     
         for i in current_opening_hours:
-            if not i.from_hour or not i.to_hour:
-                continue
-            start = str(datetime.strptime(i.from_hour,"%I:%M %p").time())
-            end = str(datetime.strptime(i.to_hour,"%I:%M %p").time())
-            print(current_time > start and current_time < end)
-            if current_time > start and current_time < end:
-                is_open = True
-                break
-            else:
-                is_open = False     
+            # if not i.from_hour or not i.to_hour:
+            #     continue
+
+            if not i.is_closed:
+                start = str(datetime.strptime(i.from_hour,"%I:%M %p").time())
+                end = str(datetime.strptime(i.to_hour,"%I:%M %p").time())
+                print(current_time > start and current_time < end)
+                if current_time > start and current_time < end:
+                    is_open = True
+                    break
+                else:
+                    is_open = False     
         return is_open
     def save(self, *args, **kwargs):
         if self.pk is not None:

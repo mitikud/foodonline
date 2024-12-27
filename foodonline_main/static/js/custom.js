@@ -23,11 +23,11 @@ function onPlaceChanged() {
     console.log("place name=>", place.name);
   }
   // get the address components and assign them to the fields
-  //   console.log(place)
+
   var geocoder = new google.maps.Geocoder();
   var address = document.getElementById("id_address").value;
   geocoder.geocode({ address: address }, function (res, status) {
-    console.log(res);
+    
     if (status == google.maps.GeocoderStatus.OK) {
       var latitude = res[0].geometry.location.lat();
       var longitude = res[0].geometry.location.lng();
@@ -73,7 +73,7 @@ $(document).ready(function () {
       url: url,
       data: data,
       success: function (response) {
-        console.log(response);
+       
         if (response.status == "login required") {
           //add sweet alert
           // swal("title", "subtitle", "info");
@@ -89,9 +89,11 @@ $(document).ready(function () {
           //calculate the subtotal, tax and grand total
           applyCartAmount(
             response.cart_amount["subtotal"],
-            response.cart_amount["tax"],
+            response.cart_amount["tax_dict"],
             response.cart_amount["grand_total"]
+           
           );
+        //  console.log(response.cart_amount["tax_dict"])
         }
       },
     });
@@ -119,7 +121,7 @@ $(document).ready(function () {
       url: url,
       data: data,
       success: function (response) {
-        console.log(response);
+        
         if (response.status == "login required") {
           //add sweet alert
           // swal("title", "subtitle", "info");
@@ -136,8 +138,8 @@ $(document).ready(function () {
             checkEmptyCart();
             applyCartAmount(
               response.cart_amount["subtotal"],
-              response.cart_amount["tax"],
-              response.cart_amount["grand_total"]
+            response.cart_amount["tax_dict"],
+            response.cart_amount["grand_total"]
             );
           }
         }
@@ -156,7 +158,7 @@ $(document).ready(function () {
       url: url,
 
       success: function (response) {
-        console.log(response);
+       
         if (response.status == "login required") {
           swal(response.message, "", "info").then(function () {
             window.location = "/accounts";
@@ -173,7 +175,7 @@ $(document).ready(function () {
           checkEmptyCart();
           applyCartAmount(
             response.cart_amount["subtotal"],
-            response.cart_amount["tax"],
+            response.cart_amount["tax_dict"],
             response.cart_amount["grand_total"]
           );
         }
@@ -198,11 +200,17 @@ $(document).ready(function () {
   }
 
   //apply the cart amount
-  function applyCartAmount(subtotal, tax, grandtotal) {
+  function applyCartAmount(subtotal, tax_dict, grandtotal) {
     if (window.location.pathname == "/cart/") {
       $("#subtotal").html(subtotal);
-      $("#tax").html(tax);
+
       $("#total").html(grandtotal);
+      for (key1 in tax_dict) {
+        
+        for (key2 in tax_dict[key1]) {
+          $('#tax-'+key1).html(tax_dict[key1][key2]);
+        }
+      }
     }
   }
 
@@ -254,7 +262,7 @@ $(document).ready(function () {
             $(".opening_hours").append(html);
             document.getElementById("opening_hours").reset();
           } else {
-            console.log(response.message);
+           
             swal(response.message, "", "error");
           }
         },
@@ -262,7 +270,7 @@ $(document).ready(function () {
     } else {
       swal("please fill the filds", "", "info");
     }
-    // console.log(day, from_hour, to_hour, is_closed, csrf_token);
+    
   });
 
   //Remove opening hour
@@ -288,22 +296,22 @@ $(document).ready(function () {
     e.preventDefault();
 
     let url = $(this).attr("data-url");
-    let row = $(this).closest("tr");  // Get the closest table row to remove
-    console.log("Removing from URL:", url); 
+    let row = $(this).closest("tr"); // Get the closest table row to remove
+    
     $.ajax({
       type: "GET",
       url: url,
       success: function (response) {
         if (response.status === "success") {
-          row.remove();  // Remove the row directly without relying on ID
-        }else {
+          row.remove(); // Remove the row directly without relying on ID
+        } else {
           swal(response.message, "", "error");
-      }
+        }
       },
       error: function () {
         swal("Failed to remove the opening hour.", "", "error");
-      }
+      },
     });
-});
+  });
   // document read closed here
 });
